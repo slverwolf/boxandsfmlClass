@@ -1,0 +1,40 @@
+код для создания коробки
+{
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(PtoM(22 / 2), PtoM(16 / 2));
+	b2BodyDef boxDef;
+	boxDef.type = b2_dynamicBody;
+	boxDef.position.Set(PtoM(100),PtoM(100));
+	b2FixtureDef boxFDef;
+	boxFDef.density = 1;
+	boxFDef.shape = &boxShape;
+	b2Body* boxBody = world.CreateBody(&boxDef);
+	boxBody->CreateFixture(&boxFDef);
+
+	Image boxImage;
+	boxImage.loadFromFile("Images\\Use\\Terrain\\box.png");
+	boxImage.createMaskFromColor(Color(255, 255, 255));
+	Texture boxTexture;
+	boxTexture.loadFromImage(boxImage);
+	Sprite boxSprite(boxTexture);
+	boxSprite.setTextureRect(IntRect(0, 0, 22, 16));
+	boxSprite.setOrigin(22 / 2, 16 / 2);
+}
+
+{
+	class MyContactListenerS1 : public b2ContactListener
+	{
+	private:
+	public:
+		void BeginContact(b2Contact* contact) override
+		{
+			if (((reinterpret_cast<FixtureUserData*> (contact->GetFixtureA()->GetUserData().pointer))->objectType) == "box")
+			{
+				if ((reinterpret_cast<FixtureUserData*> (contact->GetFixtureB()->GetUserData().pointer))->objectType == "sword")
+				{
+					std::cout << "contact" << std::endl;
+				}
+			}
+		}
+	};
+}
